@@ -1,0 +1,51 @@
+config:
+  phases:
+    - duration: 1
+      arrivalRate: 1
+scenarios:
+  - name: "Basic test"
+    flow:
+      # Clear the test data
+      - delete:
+          url: "/example?source=testData"
+      # Post a new data
+      - post:
+          url: "/example"
+          json:
+            id: test
+            source: testData
+            name: Test Data-1
+      # Fetch the data
+      - get:
+          url: "/example?source=testData&id=test"
+          capture:
+            - json: $[0].name
+              as: name
+          expect:
+            - statusCode: 200
+            - contentType: json
+            - equals:
+              - "Test Data"
+              - "{{ name }}"
+      # Post an updated data
+      - post:
+          url: "/examples"
+          json:
+            id: test
+            source: testData
+            name: Named Data
+      # Delete the data
+      - delete:
+          url: "/examples?source=testData&id=test"
+          expect:
+            - statusCode: 200
+      # Try to fetch the deleted data
+      - get:
+          url: "/examples?source=testData&id=test"
+          capture:
+            - json: $.length
+              as: count
+          expect:
+            - equals:
+              - "{{ count }}"
+              - 0

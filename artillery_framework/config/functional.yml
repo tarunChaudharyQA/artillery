@@ -1,0 +1,28 @@
+config:
+  http:
+    timeout: 30000
+  tls:
+    rejectUnauthorized: false
+  target: "https://api.example.com"
+  plugins:
+    expect: {}
+  phases:
+    - duration: 1
+      arrivalRate: 1
+  environments:
+    production:
+      target: "https://api.example.com"
+      phases:
+        - duration: 1
+          arrivalRate: 1
+    staging:
+      target: "https://api.example.com"
+      phases:
+        - duration: 1
+          arrivalRate: 1
+    devshell:
+      target: "https://api.example.com"
+      phases:
+        - duration: 1
+          arrivalRate: 1
+  processor: ../processors/smokeProcessor.js

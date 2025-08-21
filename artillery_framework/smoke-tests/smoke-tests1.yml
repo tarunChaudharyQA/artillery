@@ -1,0 +1,12 @@
+config:
+  variables:
+    date:
+    errorToShow:
+      "Expected: There should be 'test' with the latest updated date .  Actual: There are no latest test data with less than 24 hour ago."
+scenarios:
+  - name: "Verify /example for source=testData latest updated date not more than 1 day ago"
+    flow:
+      - get:
+          beforeRequest: setApiUrlAndToken
+          afterResponse: [statusCode]
+          url: "/example?source=testdata&lastImported=$gt:{{date}}T00:00:00Z"

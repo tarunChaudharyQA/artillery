@@ -1,0 +1,7 @@
+config:
+  target: "https://api.example.com"
+  plugins:
+    expect: {}
+  ensure:
+    p95: 100
+  processor: "../processor.js"

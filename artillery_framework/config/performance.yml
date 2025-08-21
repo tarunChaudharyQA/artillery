@@ -1,0 +1,10 @@
+config:
+  target: "https://api.example.com"
+  plugins:
+    expect: {}
+  phases:
+    - duration: 2
+      arrivalRate: 200
+  ensure:
+    p95: 200
+  processor: "../processor.js"

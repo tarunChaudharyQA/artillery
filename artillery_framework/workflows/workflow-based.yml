@@ -1,0 +1,66 @@
+config:
+  payload:
+    path: "../data/catalog_items.csv"
+    fields:
+      - "resourceId"
+
+scenarios:
+  - name: "Catalog to Documents"
+    flow:
+      # Fetch a random resource
+      - get:
+          beforeRequest: setApiUrlAndToken
+          url: "/v1/resources/{{ resourceId }}"
+          capture:
+            - json: $[0].mappings.warehouse
+              as: warehouseResource
+          expect:
+            - statusCode: 200
+
+      # Get warehouse resources mapped from the catalog resource, store outgoing links
+      - get:
+          beforeRequest: setApiUrlAndToken
+          url: "/v1/resources?category=warehouse&mapped.catalog={{ resourceId }}"
+          capture:
+            - json: $[0]
+              as: resource
+            - json: $[0].links
+              as: documentLinks
+          expect:
+            - statusCode: 200
+            - equals:
+              - "{{ resource.id }}"
+              - "{{ warehouseResource }}"
+
+      # Loop over the document links, fetching document first from warehouse
+      - loop:
+        # Get the actual document resource from warehouse (e.g., for context menu)
+        - get:
+            beforeRequest: setApiUrlAndToken
+            url: "/v1/resources/{{ $loopElement.id }}"
+
+        # Get the live document from the docs domain, via warehouse mapping
+        - get:
+            # TODO: These mappings are typically not added automatically, pending updated scripts
+            beforeRequest: setApiUrlAndToken
+            url: "/v1/resources?category=docs&mapped.warehouse={{ $loopElement.id }}"
+            capture:
+              json: $[0].id
+              as: diagramId
+
+        # Get all links for the document to add to process view
+        - get:
+            beforeRequest: setApiUrlAndToken
+            url: "/v1/links?parentId={{ diagramId }}"
+            capture:
+              json: $
+              as: links
+
+        # Get all links with a certain derived property, used to highlight document
+        - get:
+            beforeRequest: setApiUrlAndToken
+            url: "/v1/links?parentId={{ $loopElement.id }}&derived.flag=7"
+            capture:
+              json: $
+              as: heatTraces
+        over: documentLinks

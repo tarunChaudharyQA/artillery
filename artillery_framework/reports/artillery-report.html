@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Catalog to Documents – Synthetic Run</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f172a;
+      --muted: #94a3b8;
+      --text: #e2e8f0;
+      --accent: #60a5fa;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+    }
+    html, body { background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; }
+    .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card { background: var(--card); border-radius: 14px; padding: 16px 18px; box-shadow: 0 4px 20px rgba(0,0,0,.25);}
+    .card h2 { margin: 4px 0 12px 0; font-size: 18px; }
+    .muted { color: var(--muted); }
+    .pill { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+    .ok { background: rgba(34,197,94,.12); color: var(--ok);}
+    .warn { background: rgba(245,158,11,.12); color: var(--warn);}
+    .err { background: rgba(239,68,68,.12); color: var(--err);}
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid rgba(148,163,184,.15); text-align: left; }
+    th { color: var(--muted); font-weight: 500; }
+    .kpi { font-size: 22px; font-weight: 700; }
+    .sub { font-size: 12px; color: var(--muted); }
+    .row { display:flex; gap:16px; align-items:center; }
+    .chart { width: 100%; height: 220px; border-radius: 12px; background: linear-gradient(180deg, rgba(96,165,250,.12), rgba(96,165,250,0)); }
+    .footer { margin-top:24px; color: var(--muted); font-size: 12px; }
+    code { background: rgba(148,163,184,.12); padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="margin:0 0 8px 0;">Catalog to Documents – Synthetic Run</h1>
+    <div class="muted sub">Started: 2025-08-21 11:17:46 • Duration: 6m 0s</div>
+    <div class="grid" style="margin-top:16px;">
+      <div class="card" style="grid-column: span 3;">
+        <h2>Scenarios</h2>
+        <div class="kpi">1187/1200</div>
+        <div class="sub">completed / launched</div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <h2>Requests</h2>
+        <div class="kpi">5600</div>
+        <div class="sub">total</div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <h2>RPS</h2>
+        <div class="kpi">15.5</div>
+        <div class="sub">min 8.3 • max 23.1</div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <h2>Overall latency (ms)</h2>
+        <div class="kpi">p95 620</div>
+        <div class="sub">median 158 • p99 980</div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px;">
+      <div class="card" style="grid-column: span 7;">
+        <h2>Latency percentiles (ms)</h2>
+        <div id="latency-chart" class="chart"></div>
+        <div class="sub" style="margin-top:6px;">p50 158 • p75 290 • p90 470 • <b>p95 620</b> • <b>p99 980</b> • min 43 • max 1750</div>
+      </div>
+      <div class="card" style="grid-column: span 5;">
+        <h2>HTTP status codes</h2>
+        <table>
+          <thead><tr><th>Code</th><th>Count</th></tr></thead>
+          <tbody>
+            <tr><td>200</td><td>5572</td></tr><tr><td>401</td><td>2</td></tr><tr><td>500</td><td>10</td></tr><tr><td>502</td><td>2</td></tr><tr><td>504</td><td>14</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Per-endpoint stats</h2>
+      <table>
+        <thead>
+          <tr><th>Endpoint</th><th>Requests</th><th>Median</th><th>p90</th><th>p95</th><th>p99</th><th>2xx</th><th>4xx</th><th>5xx</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET /v1/resources/{{ resourceId }}</code></td>
+            <td>1200</td>
+            <td>130</td>
+            <td>360</td>
+            <td><b>480</b></td>
+            <td><b>870</b></td>
+            <td>1189</td>
+            <td>0</td>
+            <td>11</td>
+          </tr>
+          <tr>
+            <td><code>GET /v1/resources?category=warehouse&amp;mapped.catalog={{ resourceId }}</code></td>
+            <td>1100</td>
+            <td>180</td>
+            <td>520</td>
+            <td><b>650</b></td>
+            <td><b>1030</b></td>
+            <td>1092</td>
+            <td>0</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td><code>GET /v1/resources/{{ $loopElement.id }}</code></td>
+            <td>1000</td>
+            <td>120</td>
+            <td>330</td>
+            <td><b>410</b></td>
+            <td><b>760</b></td>
+            <td>998</td>
+            <td>2</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td><code>GET /v1/resources?category=docs&amp;mapped.warehouse={{ $loopElement.id }}</code></td>
+            <td>900</td>
+            <td>210</td>
+            <td>560</td>
+            <td><b>700</b></td>
+            <td><b>1120</b></td>
+            <td>894</td>
+            <td>0</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td><code>GET /v1/links?parentId={{ diagramId }}</code></td>
+            <td>800</td>
+            <td>95</td>
+            <td>260</td>
+            <td><b>330</b></td>
+            <td><b>600</b></td>
+            <td>800</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td><code>GET /v1/links?parentId={{ $loopElement.id }}&amp;derived.flag=7</code></td>
+            <td>600</td>
+            <td>110</td>
+            <td>280</td>
+            <td><b>360</b></td>
+            <td><b>640</b></td>
+            <td>599</td>
+            <td>0</td>
+            <td>1</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid" style="margin-top:16px;">
+      <div class="card" style="grid-column: span 6;">
+        <h2>Errors</h2>
+        <table>
+          <thead><tr><th>Type</th><th>Count</th></tr></thead>
+          <tbody>
+<tr><td>ETIMEDOUT</td><td>4</td></tr><tr><td>ECONNRESET</td><td>3</td></tr><tr><td>HTTP_5xx</td><td>6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="grid-column: span 6;">
+        <h2>Notes</h2>
+        <p class="muted">This is a <b>synthetic</b> report generated for portfolio/demo purposes. Values are illustrative but follow typical Artillery distributions and fields (p50, p75, p90, <b>p95</b>, <b>p99</b>, RPS, codes, errors).</p>
+        <p>Scenario: <code>Catalog to Documents</code> using endpoints under <code>/v1/resources</code> and <code>/v1/links</code>.</p>
+      </div>
+    </div>
+
+    <div class="footer">Generated locally • No external dependencies • &copy; Your Name</div>
+  </div>
+
+  <script>
+    // Tiny SVG bar chart (no deps)
+    (function() {
+      const data = [
+        { label: 'p50', value: 158 },
+        { label: 'p75', value: 290 },
+        { label: 'p90', value: 470 },
+        { label: 'p95', value: 620 },
+        { label: 'p99', value: 980 }
+      ];
+      const max = Math.max.apply(null, data.map(d => d.value));
+      const w = document.getElementById('latency-chart').clientWidth;
+      const h = document.getElementById('latency-chart').clientHeight;
+      const pad = 24;
+      const barw = (w - pad*2) / data.length * 0.7;
+      const gap = ((w - pad*2) - barw*data.length) / (data.length - 1);
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+
+      // axes baseline
+      const axis = document.createElementNS(svgNS, 'line');
+      axis.setAttribute('x1', pad);
+      axis.setAttribute('x2', w - pad);
+      axis.setAttribute('y1', h - pad);
+      axis.setAttribute('y2', h - pad);
+      axis.setAttribute('stroke', 'rgba(148,163,184,.45)');
+      axis.setAttribute('stroke-width', '1');
+      svg.appendChild(axis);
+
+      data.forEach((d, i) => {
+        const x = pad + i * (barw + gap);
+        const barHeight = Math.max(4, (d.value / max) * (h - pad*2));
+        const y = (h - pad) - barHeight;
+
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', y);
+        rect.setAttribute('width', barw);
+        rect.setAttribute('height', barHeight);
+        rect.setAttribute('rx', '6');
+        rect.setAttribute('fill', 'rgba(96,165,250,.8)');
+        svg.appendChild(rect);
+
+        const label = document.createElementNS(svgNS, 'text');
+        label.textContent = d.label;
+        label.setAttribute('x', x + barw/2);
+        label.setAttribute('y', h - pad/2);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-size', '12');
+        label.setAttribute('fill', 'rgba(226,232,240,.85)');
+        svg.appendChild(label);
+
+        const val = document.createElementNS(svgNS, 'text');
+        val.textContent = d.value + ' ms';
+        val.setAttribute('x', x + barw/2);
+        val.setAttribute('y', y - 6);
+        val.setAttribute('text-anchor', 'middle');
+        val.setAttribute('font-size', '12');
+        val.setAttribute('fill', 'rgba(148,163,184,.95)');
+        svg.appendChild(val);
+      });
+
+      document.getElementById('latency-chart').appendChild(svg);
+    })();
+  </script>
+</body>
+</html>

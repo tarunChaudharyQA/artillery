@@ -1,0 +1,142 @@
+{
+  "summary": {
+    "test_name": "Catalog to Documents \u2013 Synthetic Run",
+    "started_at": "2025-08-21 11:17:46",
+    "duration_sec": 360,
+    "scenarios_launched": 1200,
+    "scenarios_completed": 1187,
+    "requests_completed": 5600,
+    "rps": {
+      "mean": 15.5,
+      "min": 8.3,
+      "max": 23.1
+    },
+    "latency_ms": {
+      "min": 43,
+      "max": 1750,
+      "median": 158,
+      "p75": 290,
+      "p90": 470,
+      "p95": 620,
+      "p99": 980
+    },
+    "codes": {
+      "200": 5572,
+      "500": 10,
+      "504": 14,
+      "502": 2,
+      "401": 2
+    },
+    "errors": {
+      "ETIMEDOUT": 4,
+      "ECONNRESET": 3,
+      "HTTP_5xx": 6
+    }
+  },
+  "endpoints": [
+    {
+      "name": "GET /v1/resources/{{ resourceId }}",
+      "count": 1200,
+      "latency_ms": {
+        "min": 50,
+        "max": 1400,
+        "median": 130,
+        "p75": 220,
+        "p90": 360,
+        "p95": 480,
+        "p99": 870
+      },
+      "codes": {
+        "200": 1189,
+        "500": 6,
+        "504": 5
+      }
+    },
+    {
+      "name": "GET /v1/resources?category=warehouse&mapped.catalog={{ resourceId }}",
+      "count": 1100,
+      "latency_ms": {
+        "min": 65,
+        "max": 1600,
+        "median": 180,
+        "p75": 310,
+        "p90": 520,
+        "p95": 650,
+        "p99": 1030
+      },
+      "codes": {
+        "200": 1092,
+        "502": 2,
+        "504": 6
+      }
+    },
+    {
+      "name": "GET /v1/resources/{{ $loopElement.id }}",
+      "count": 1000,
+      "latency_ms": {
+        "min": 45,
+        "max": 1200,
+        "median": 120,
+        "p75": 210,
+        "p90": 330,
+        "p95": 410,
+        "p99": 760
+      },
+      "codes": {
+        "200": 998,
+        "401": 2
+      }
+    },
+    {
+      "name": "GET /v1/resources?category=docs&mapped.warehouse={{ $loopElement.id }}",
+      "count": 900,
+      "latency_ms": {
+        "min": 70,
+        "max": 1750,
+        "median": 210,
+        "p75": 360,
+        "p90": 560,
+        "p95": 700,
+        "p99": 1120
+      },
+      "codes": {
+        "200": 894,
+        "500": 3,
+        "504": 3
+      }
+    },
+    {
+      "name": "GET /v1/links?parentId={{ diagramId }}",
+      "count": 800,
+      "latency_ms": {
+        "min": 43,
+        "max": 980,
+        "median": 95,
+        "p75": 170,
+        "p90": 260,
+        "p95": 330,
+        "p99": 600
+      },
+      "codes": {
+        "200": 800
+      }
+    },
+    {
+      "name": "GET /v1/links?parentId={{ $loopElement.id }}&derived.flag=7",
+      "count": 600,
+      "latency_ms": {
+        "min": 55,
+        "max": 1100,
+        "median": 110,
+        "p75": 190,
+        "p90": 280,
+        "p95": 360,
+        "p99": 640
+      },
+      "codes": {
+        "200": 599,
+        "500": 1
+      }
+    }
+  ]
+}

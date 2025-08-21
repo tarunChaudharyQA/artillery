@@ -1,0 +1,73 @@
+scenarios:
+  - name: "Basic functional workflow"
+    flow:
+      # Fetch a page of items
+      - get:
+          url: "/v1/resources?category=catalog&type=item&fields=id&limit=10"
+          capture:
+          - json: $
+            as: items
+          - json: $.length
+            as: numItems
+      # Loop over the item resources
+      - loop:
+        # Fetch the full item resource
+        - get:
+            beforeRequest: "setApiUrlAndToken"
+            url: "/v1/resources/{{ $loopElement }}"
+            capture:
+            - json: $[0].id
+              as: "resourceId"
+            expect:
+              - statusCode: 200
+        # Fetch all children of the item
+        - get:
+            beforeRequest: "setApiUrlAndToken"
+            url: "/v1/resources?parentId={{ resourceId }}"
+            capture:
+            - json: $
+              as: assets
+        # Fetch some random resources of the item
+        - loop:
+          - get:
+              beforeRequest: "selectRandomAsset"
+              url: "/v1/resources/{{ resourceId }}"
+          - get:
+              beforeRequest: "selectRandomAsset"
+              url: "/v1/resources/{{ resourceId }}"
+          count: 2
+        over: items
+
+  - name: "Basic document workflow"
+    flow:
+      # Fetch a page of documents
+      - get:
+          url: "/v1/resources?category=docs&type=document&fields=id&limit=10"
+          capture:
+          - json: $
+            as: documents
+      # Loop over the document resources
+      - loop:
+        # Fetch the full document resource
+        - get:
+            beforeRequest: "setApiUrlAndToken"
+            url: "/v1/resources/{{ $loopElement }}"
+            capture:
+            - json: $[0].id
+              as: "resourceId"
+            expect:
+              - statusCode: 200
+        # Fetch all links of the document
+        - get:
+            beforeRequest: "setApiUrlAndToken"
+            url: "/v1/links?parentId={{ resourceId }}"
+            capture:
+            - json: $
+              as: assets
+        # Fetch some random resources of the document
+        - loop:
+          - get:
+              beforeRequest: "selectRandomAsset"
+              url: "/v1/resources/{{ resourceId }}"
+          count: 5
+        over: documents
